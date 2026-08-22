@@ -17,5 +17,5 @@ for venta in ventas:
         mayor_ingreso = ingreso
 
 
-print("Producto con mayor ingresos:", producto_mayor_ingreso)
+print("Producto con mayores ingresos:", producto_mayor_ingreso)
 print("Total ingreso:", mayor_ingreso)
