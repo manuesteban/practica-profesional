@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ventas - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Panel de Ventas</h1>
+        </header>
+
+        <!-- Tarjetas de métricas -->
+        <section class="kpi-container">
+            <div class="card">
+                <h3>Total Recaudado</h3>
+                <p id="kpi-total" class="kpi-value">0</p>
+            </div>
+            <div class="card">
+                <h3>Unidades Vendidas</h3>
+                <p id="kpi-unidades" class="kpi-value">0</p>
+            </div>
+            <div class="card">
+                <h3>Producto Más Caro</h3>
+                <p id="kpi-mas-caro" class="kpi-value">-</p>
+            </div>
+        </section>
+
+        <!-- Tabla dinámica de ventas -->
+        <section class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-cuerpo">
+                    <!-- Filas insertadas dinámicamente con JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>    
+</html>
