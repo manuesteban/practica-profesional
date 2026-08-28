@@ -1,0 +1,4 @@
+node_modules/
+*.db
+*.class
+__pycache__/
