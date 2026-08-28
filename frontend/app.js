@@ -1,47 +1,45 @@
-// 1. Dataset de ventas (mismos datos usados a lo largo de la semana)
-const ventas = [
-    { producto: "Notebook", precio: 750000, cantidad: 2 },
-    { producto: "Mouse", precio: 15000, cantidad: 5 },
-    { producto: "Teclado", precio: 30000, cantidad: 3 },
-    { producto: "Monitor", precio: 180000, cantidad: 2 }
-];
-
-// 2. Referencias a los elementos del DOM en HTML
+// 1. Referencias al DOM
 const tablaCuerpo = document.getElementById("tabla-cuerpo");
 const kpiTotal = document.getElementById("kpi-total");
 const kpiUnidades = document.getElementById("kpi-unidades");
 const kpiMasCaro = document.getElementById("kpi-mas-caro");
 
-// 3. Variables de cálculo
-let totalRecaudado = 0;
-let totalUnidades = 0;
-let productoMasCaro = ventas[0];
+// 2. URLs de la API en Node.js
+const API_VENTAS = "http://localhost:3000/api/ventas";
+const API_RESUMEN = "http://localhost:3000/api/resumen";
 
-// 4. Procesar y renderizar datos
-ventas.forEach(venta => {
-    const subtotal = venta.precio * venta.cantidad;
-    
-    // Acumuladores
-    totalRecaudado += subtotal;
-    totalUnidades += venta.cantidad;
+// 3. Función asíncrona para cargar los datos desde la base de datos SQL
+async function cargarDatos() {
+    try {
+        // Consultar métricas (KPIs)
+        const respResumen = await fetch(API_RESUMEN);
+        const resumen = await respResumen.json();
 
-    // Comparación para encontrar el producto más caro
-    if (venta.precio > productoMasCaro.precio) {
-        productoMasCaro = venta;
+        kpiTotal.textContent = `$${resumen.totalRecaudado.toLocaleString("es-CL")}`;
+        kpiUnidades.textContent = resumen.totalUnidades;
+        kpiMasCaro.textContent = `${resumen.productoMasCaro} ($${resumen.precioMasCaro.toLocaleString("es-CL")})`;
+
+        // Consultar listado de ventas
+        const respVentas = await fetch(API_VENTAS);
+        const ventas = await respVentas.json();
+
+        tablaCuerpo.innerHTML = ""; // Limpiar tabla antes de cargar
+
+        ventas.forEach(v => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td><strong>${v.producto}</strong></td>
+                <td>$${v.precio.toLocaleString("es-CL")}</td>
+                <td>${v.cantidad}</td>
+                <td>$${v.subtotal.toLocaleString("es-CL")}</td>
+            `;
+            tablaCuerpo.appendChild(fila);
+        });
+
+    } catch (error) {
+        console.error("Error al conectar con la API de Node.js:", error);
     }
+}
 
-    // Inyectar fila HTML en la tabla
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-        <td><strong>${venta.producto}</strong></td>
-        <td>$${venta.precio.toLocaleString("es-CL")}</td>
-        <td>${venta.cantidad}</td>
-        <td>$${subtotal.toLocaleString("es-CL")}</td>
-    `;
-    tablaCuerpo.appendChild(fila);
-});
-
-// 5. Actualizar los KPIs en las tarjetas
-kpiTotal.textContent = `$${totalRecaudado.toLocaleString("es-CL")}`;
-kpiUnidades.textContent = totalUnidades;
-kpiMasCaro.textContent = `${productoMasCaro.producto} ($${productoMasCaro.precio.toLocaleString("es-CL")})`;
+// Ejecutar al cargar la página
+cargarDatos();
